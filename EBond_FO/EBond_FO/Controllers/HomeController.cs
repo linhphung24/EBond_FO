@@ -1,13 +1,25 @@
 using EBond_FO.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.SqlClient;
 using System.Diagnostics;
 
 namespace EBond_FO.Controllers
 {
     public class HomeController : Controller
     {
-        public IActionResult Index()
+        private readonly SqlConnection _db;
+
+        public HomeController(SqlConnection db)
         {
+            _db = db;
+        }
+
+        public async Task<IActionResult> Index()
+        {
+            
+
+            await _db.OpenAsync();
+
             return View();
         }
 
