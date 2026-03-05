@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>TCINVEST Login</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+
+    <!-- HEADER -->
+    <div class="top-section">
+        <div class="logo">TCINVEST</div>
+
+        <div class="login-container">
+
+            <div class="login-left">
+                <div class="input-group">
+                    <i class="fa fa-user"></i>
+                    <input type="text" placeholder="Email / Số tài khoản / Điện thoại">
+                </div>
+
+                <div class="input-group">
+                    <i class="fa fa-key"></i>
+                    <input type="password" id="password" placeholder="Mật khẩu">
+                    <i class="fa fa-eye toggle" id="togglePassword"></i>
+                </div>
+
+                <div class="login-actions">
+                    <button class="btn-login">ĐĂNG NHẬP</button>
+                    <div class="forgot">
+                        Thiết lập mật khẩu mới hoặc Mở khoá tài khoản
+                        <a href="#">tại đây!</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="login-right">
+                <div class="qr-box">
+                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=125x125&data=TCINVEST" class="qr-img">
+                </div>
+                <p>Hết hiệu lực, vui lòng <a href="#">tải lại QR</a></p>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- SERVICE SECTION -->
+    <div class="service-section">
+
+        <div class="top-icons">
+            <div class="icon-item">
+                <div class="circle"><i class="fa fa-user-plus"></i></div>
+                <p>Mở tài khoản</p>
+            </div>
+
+            <div class="icon-item">
+                <div class="circle"><i class="fa fa-user-lock"></i></div>
+                <p>Tạm khoá tài khoản</p>
+            </div>
+
+            <div class="icon-item">
+                <div class="circle"><i class="fa fa-gear"></i></div>
+                <p>Tối ưu bộ nhớ</p>
+            </div>
+        </div>
+
+        <div class="card-grid">
+
+            <div class="card">
+                <i class="fa fa-chart-line card-icon"></i>
+                <h3>GD chứng khoán trực tuyến</h3>
+                <p>Nơi quản lý và thực hiện các hoạt động giao dịch chứng khoán trực tuyến</p>
+            </div>
+
+            <div class="card">
+                <i class="fa fa-dollar-sign card-icon"></i>
+                <h3>Bảng giá</h3>
+                <p>Nơi theo dõi trực tuyến biến động giá của các loại chứng khoán</p>
+            </div>
+
+            <div class="card">
+                <i class="fa fa-chart-simple card-icon"></i>
+                <h3>Phân tích đầu tư</h3>
+                <p>Nơi tổng hợp thông tin, dữ liệu, phân tích và đánh giá cổ phiếu</p>
+            </div>
+
+            <div class="card">
+                <i class="fa fa-hand-holding-dollar card-icon"></i>
+                <h3>Quản lý gia sản</h3>
+                <p>Tư vấn, lập kế hoạch đầu tư và quản lý gia sản trọn đời</p>
+            </div>
+
+            <div class="card">
+                <i class="fa fa-users card-icon"></i>
+                <h3>iWealth Club</h3>
+                <p>Nơi các nhà đầu tư gặp gỡ, trao đổi, tương tác với nhau hoặc với các chuyên gia về các loại chứng khoán</p>
+            </div>
+
+            <div class="card">
+                <i class="fa fa-building-columns card-icon"></i>
+                <h3>Liên kết và tiện ích khác</h3>
+                <p>Các tiện ích và sản phẩm liên kết với các đối tác của công ty</p>
+            </div>
+
+        </div>
+
+    </div>
+
+</body>
+</html>
+
+<script>
+    const toggle = document.getElementById("togglePassword");
+    const password = document.getElementById("password");
+
+    toggle.addEventListener("click", function () {
+        if (password.type === "password") {
+            password.type = "text";
+            this.classList.remove("fa-eye");
+            this.classList.add("fa-eye-slash");
+        } else {
+            password.type = "password";
+            this.classList.remove("fa-eye-slash");
+            this.classList.add("fa-eye");
+        }
+    });
+</script>

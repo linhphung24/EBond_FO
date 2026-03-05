@@ -34,7 +34,7 @@
                                     <span class="label">Trạng thái:</span>
                                     <select id="filter-status">
                                         <option value="">Tất cả</option>
-                                        @foreach (var s in Model.Select(x => x.SecurityTradingStatus).Where(x => !string.IsNullOrEmpty(x)).Distinct().OrderBy(x => x))
+                                        @foreach (var s in Model.Select(x => x.SecurityTradingStatus).Where(x => !string.IsNullOrEmpty(x.ToString())).Distinct().OrderBy(x => x))
                                         {
                                             <option value="@s">@s</option>
                                         }
