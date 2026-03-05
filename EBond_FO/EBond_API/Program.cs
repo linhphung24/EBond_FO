@@ -1,11 +1,26 @@
+using EBond_API.Data;
+using EBond_API.Services;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
 builder.Services.AddControllers();
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseSqlServer(
+        builder.Configuration.GetConnectionString("DefaultConnection")));
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
+builder.Services.AddSingleton<SqlConnectionFactory>();
+
+builder.Services.AddScoped<AuthRepository>();
+
+builder.Services.AddScoped<AuthService>();
+
+builder.Services.AddScoped<TokenService>();
+//builder.Services.AddSwaggerGen();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

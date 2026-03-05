@@ -1,0 +1,28 @@
+CREATE TABLE RefreshTokens
+(
+    Id UNIQUEIDENTIFIER PRIMARY KEY DEFAULT NEWID(),
+
+    MCAccountID int NOT NULL,
+    
+    TokenHash NVARCHAR(255) NOT NULL,
+
+    ExpiryDate DATETIME2 NOT NULL,
+
+    CreatedAt DATETIME2 DEFAULT GETUTCDATE(),
+
+    RevokedAt DATETIME2 NULL,
+
+    ReplacedByTokenHash NVARCHAR(255) NULL,
+
+    IpAddress NVARCHAR(50) NULL,
+
+    CONSTRAINT FK_RefreshTokens_User
+    FOREIGN KEY(MCAccountID) REFERENCES MCAccount(Id)
+)
+
+
+ALTER TABLE MCAccount
+ADD PasswordHash nvarchar(255);
+
+ALTER TABLE MCAccount_Cancel
+ADD PasswordHash nvarchar(255);
