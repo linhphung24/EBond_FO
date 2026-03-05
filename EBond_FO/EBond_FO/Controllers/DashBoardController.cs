@@ -1,12 +1,14 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using EBond_FO.Repositories;
+using Microsoft.AspNetCore.Mvc;
 
 namespace EBond_FO.Controllers
 {
     public class DashBoardController : Controller
     {
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            var list = await BondRepository.GetAll();
+            return View(list);
         }
     }
 }

@@ -1,3 +1,4 @@
 <Solution>
+  <Project Path="EBond_API/EBond_API.csproj" Id="3b292be1-d198-4613-9333-b5e5abf31a94" />
   <Project Path="EBond_FO/EBond_FO.csproj" />
 </Solution>
