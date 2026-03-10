@@ -1,4 +1,4 @@
-﻿namespace EBond_API.Data
+namespace EBond_API.Data
 {
     using EBond_API.Models;
     using Microsoft.EntityFrameworkCore;
@@ -10,46 +10,31 @@
         {
         }
 
-        public DbSet<User> Users { get; set; }
-
         public DbSet<RefreshToken> RefreshTokens { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<User>(entity =>
-            {
-                entity.HasKey(x => x.Id);
-
-                entity.Property(x => x.Username)
-                    .IsRequired()
-                    .HasMaxLength(50);
-
-                entity.Property(x => x.PasswordHash)
-                    .IsRequired()
-                    .HasMaxLength(255);
-
-                entity.HasIndex(x => x.Username)
-                    .IsUnique();
-            });
-
             modelBuilder.Entity<RefreshToken>(entity =>
             {
                 entity.HasKey(x => x.Id);
+
+                entity.Property(x => x.Id)
+                    .HasDefaultValueSql("NEWID()");  // auto-generate Guid from SQL
 
                 entity.Property(x => x.TokenHash)
                     .IsRequired()
                     .HasMaxLength(255);
 
+                entity.Property(x => x.ReplacedByTokenHash)
+                    .HasMaxLength(255);
+
+                entity.Property(x => x.IpAddress)
+                    .HasMaxLength(50);
+
                 entity.HasIndex(x => x.TokenHash);
-
-                entity.HasIndex(x => x.UserId);
-
-                entity.HasOne(x => x.User)
-                    .WithMany(x => x.RefreshTokens)
-                    .HasForeignKey(x => x.UserId)
-                    .OnDelete(DeleteBehavior.Cascade);
+                entity.HasIndex(x => x.UserID);
             });
         }
     }

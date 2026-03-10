@@ -1,13 +1,11 @@
-﻿namespace EBond_API.Models
+namespace EBond_API.Models
 {
     public class User
     {
         public int Id { get; set; }
 
-        public string Username { get; set; }
+        public string Username { get; set; } = string.Empty;
 
-        public string PasswordHash { get; set; }
-
-        public List<RefreshToken> RefreshTokens { get; set; }
+        public string PasswordHash { get; set; } = string.Empty;
     }
 }
