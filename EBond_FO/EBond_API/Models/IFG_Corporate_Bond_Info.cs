@@ -16,5 +16,6 @@ namespace EBond_API.Models
         public int? INTEREST_PAYMENT_TYPE { get; set; }
         public decimal? TotalListingQtty { get; set; }
         public decimal? Parvalue { get; set; }
+        public int? SecurityTradingStatus { get; set; }
     }
 }
