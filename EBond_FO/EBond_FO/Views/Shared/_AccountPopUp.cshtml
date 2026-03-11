@@ -1,0 +1,199 @@
+﻿<link rel="stylesheet" href="~/css/AccountPopUp.css" asp-append-version="true" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<!-- POPUP -->
+<div id="profilePopup" class="popup">
+
+    <div class="popup-arrow"></div>
+
+    <div class="popup-menu">
+
+        <div class="menu-item">
+            <b><i class="fa-solid fa-user"></i> Thông tin cá nhân</b>
+        </div>
+
+        <div class="menu-item flex">
+            <div>
+                <b><i class="fa-solid fa-building-columns"></i> Tiểu khoản mặc định</b>
+            </div>
+            <select class="account-type">
+                <option value="kyquy">Ký quỹ</option>
+                <option value="thuong">Thường</option>
+            </select>
+        </div>
+
+        <div class="menu-item column">
+            <b><i class="fa-solid fa-shield-halved"></i> Bảo mật</b>
+            <small>Mật khẩu, OTP và khóa tài khoản</small>
+        </div>
+
+        <div class="menu-item column">
+            <b><i class="fa-solid fa-gear"></i> Hiển thị & Cài đặt</b>
+            <small>Màu sắc, ngôn ngữ và trang chủ</small>
+        </div>
+
+        <div class="menu-item column">
+            <b><i class="fa-solid fa-bell"></i> Thông báo</b>
+            <small>Cài đặt tin nhắn quan tâm và hệ thống</small>
+        </div>
+
+        <div class="menu-item column">
+            <b><i class="fa-solid fa-desktop"></i> Hệ thống</b>
+            <small>Phiên bản, đo tốc độ mạng và khôi phục cài đặt</small>
+        </div>
+
+        <div class="menu-item">
+            <b><i class="fa-solid fa-broom"></i> Tối ưu bộ nhớ (xóa cache)</b>
+        </div>
+
+        <div class="menu-item logout">
+            <b><i class="fa-solid fa-right-from-bracket"></i> Đăng xuất</b>
+        </div>
+
+    </div>
+
+</div>
+
+<div id="profileModal" class="modal">
+
+    <div class="modal-content">
+
+        @* <div class="modal-header">
+                    <span class="close-btn" id="closeModal">&times;</span>
+               
+                </div> *@
+
+        <div class="modal-body">
+            <div class="left-panel">
+                <h2>Cá nhân</h2>
+
+                <div class="user-box">
+                    <img src="https://tcinvest.tcbs.com.vn/assets/images/default-avatar.svg">
+                    <div>
+                        <b>Naba</b>
+                        <p>105C960555</p>
+                    </div>
+                </div>
+
+                <div class="menu">
+                    <div class="menu-item active">Thông tin cá nhân</div>
+                    <div class="menu-item">Tiền</div>
+                    <div class="menu-item">Bảo mật</div>
+                    <div class="menu-item">Hiển thị & Cài đặt</div>
+                    <div class="menu-item">Thông báo</div>
+                    <div class="menu-item">Hệ thống</div>
+                </div>
+            </div>
+
+            <div class="right-panel">
+
+                <span class="close-btn" id="closeModal">&times;</span>
+
+                <div class="profile-top">
+                    <img class="avatar"
+                         src="https://tcinvest.tcbs.com.vn/assets/images/default-avatar.svg">
+
+                    <h3>Naba</h3>
+                    <p>105C960555 | Hội viên: Silver  - <u>0 iXu</u> </p>
+
+                    <button class="btn-red">YÊU CẦU THAY ĐỔI</button>
+                </div>
+
+                <div class="info-list">
+
+                    <div class="info-row">
+                        <span>Số điện thoại</span>
+                        <b>0973960555</b>
+                    </div>
+
+                    <div class="info-row">
+                        <span>Email</span>
+                        <b>nxtruongbg@gmail.com</b>
+                    </div>
+
+                    <div class="info-row">
+                        <span>Ngày sinh</span>
+                        <b>01/01/1900</b>
+                    </div>
+
+                    <div class="info-row">
+                        <span>CCCD</span>
+                        <b>824317218106</b>
+                    </div>
+
+                    <div class="info-row">
+                        <span>Ngày cấp</span>
+                        <b>01/01/2026</b>
+                    </div>
+
+                    <div class="info-row">
+                        <span>Nơi cấp</span>
+                        <b></b>
+                    </div>
+
+                    <div class="info-row">
+                        <span>Địa chỉ</span>
+                        <b></b>
+                    </div>
+
+                    <div class="info-row">
+                        <span>Mã số thuế</span>
+                        <b>-</b>
+                    </div>
+
+                    <div class="info-row">
+                        <span>SID</span>
+                        <b>-</b>
+                    </div>
+
+                    <div class="info-row">
+                        <span>PCOD</span>
+                        <b>-</b>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+    const btn = document.getElementById("profileBtn");
+    const popup = document.getElementById("profilePopup");
+
+    btn.onclick = () => {
+        popup.style.display =
+            popup.style.display === "block" ? "none" : "block";
+    };
+
+    document.addEventListener("click",(e)=>{
+        if(!btn.contains(e.target) && !popup.contains(e.target)){
+            popup.style.display="none";
+        }
+    });
+
+    // MODAL CHO POPUP ACCOUNT
+
+    const modal = document.getElementById("profileModal");
+    const closeBtn = document.getElementById("closeModal");
+
+    document.querySelectorAll(".menu-item")[0].onclick = () =>{
+        modal.style.display="flex";
+        popup.style.display="none";
+    }
+
+    closeBtn.onclick = () =>{
+        modal.style.display="none";
+    }
+
+    window.onclick = (e)=>{
+        if(e.target == modal){
+            modal.style.display="none";
+        }
+    }
+</script>
