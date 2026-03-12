@@ -10,12 +10,10 @@ namespace EBond_API.Controllers
     public class AssetController : ControllerBase
     {
         private readonly AssetRepository   _assetRepo;
-        private readonly BalanceRepository _balanceRepo;
 
-        public AssetController(AssetRepository assetRepo, BalanceRepository balanceRepo)
+        public AssetController(AssetRepository assetRepo)
         {
             _assetRepo   = assetRepo;
-            _balanceRepo = balanceRepo;
         }
 
         /// <summary>
@@ -55,7 +53,7 @@ namespace EBond_API.Controllers
 
             try
             {
-                var data = await _balanceRepo.GetBalanceAsync(custodycd);
+                var data = await _assetRepo.GetBalanceAsync(custodycd);
                 return Ok(data);
             }
             catch (Exception ex)

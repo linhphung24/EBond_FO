@@ -1,6 +1,7 @@
 namespace EBond_API.Data
 {
     using Dapper;
+    using EBond_API.ConnectDB;
     using EBond_API.Models;
     using System.Data;
 
