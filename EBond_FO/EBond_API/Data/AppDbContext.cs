@@ -10,13 +10,13 @@ namespace EBond_API.Data
         {
         }
 
-        public DbSet<RefreshToken> RefreshTokens { get; set; }
+        public DbSet<RefreshTokenModels> RefreshTokens { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<RefreshToken>(entity =>
+            modelBuilder.Entity<RefreshTokenModels>(entity =>
             {
                 entity.HasKey(x => x.Id);
 

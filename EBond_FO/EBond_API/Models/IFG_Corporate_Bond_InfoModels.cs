@@ -1,6 +1,6 @@
 namespace EBond_API.Models
 {
-    public class IFG_Corporate_Bond_Info
+    public class IFG_Corporate_Bond_InfoModels
     {
         public string? Name { get; set; }
         public string? Symbol { get; set; }

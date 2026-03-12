@@ -13,11 +13,11 @@ namespace EBond_API.Data
             _factory = factory;
         }
 
-        public async Task<List<MCCode>> GetSecurityTradingStatusAsync()
+        public async Task<List<MCCodeModels>> GetSecurityTradingStatusAsync()
         {
             using var conn = _factory.CreateConnection();
 
-            var result = await conn.QueryAsync<MCCode>(
+            var result = await conn.QueryAsync<MCCodeModels>(
                 "API_MCCode_GetSecurityTradingStatus",
                 commandType: CommandType.StoredProcedure);
 

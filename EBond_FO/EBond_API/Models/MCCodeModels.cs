@@ -1,6 +1,6 @@
 namespace EBond_API.Models
 {
-    public class MCCode
+    public class MCCodeModels
     {
         public string? Type { get; set; }
         public string? ID { get; set; }

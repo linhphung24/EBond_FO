@@ -14,14 +14,14 @@ namespace EBond_API.Data
         }
 
         // null or "" → skip filter (return all for that field)
-        public async Task<List<IFG_Corporate_Bond_Info>> GetAllAsync(
+        public async Task<List<IFG_Corporate_Bond_InfoModels>> GetAllAsync(
             string? symbol                = null,
             string? name                  = null,
             int?    securityTradingStatus = null)
         {
             using var conn = _factory.CreateConnection();
 
-            var result = await conn.QueryAsync<IFG_Corporate_Bond_Info>(
+            var result = await conn.QueryAsync<IFG_Corporate_Bond_InfoModels>(
                 "API_IFG_Corporate_Bond_Info_GetALL",
                 new
                 {

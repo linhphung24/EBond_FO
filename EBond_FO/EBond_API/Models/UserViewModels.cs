@@ -1,6 +1,6 @@
 namespace EBond_API.Models
 {
-    public class User
+    public class UserViewModels
     {
         public int Id { get; set; }
 

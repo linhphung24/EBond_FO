@@ -1,6 +1,6 @@
 namespace EBond_API.Models
 {
-    public class RefreshToken
+    public class RefreshTokenModels
     {
         public Guid Id { get; set; }
 

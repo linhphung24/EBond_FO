@@ -16,7 +16,7 @@
             _config = config;
         }
 
-        public string GenerateAccessToken(User user)
+        public string GenerateAccessToken(UserViewModels user)
         {
             var key = Encoding.UTF8.GetBytes(_config["Jwt:Key"]!);
 

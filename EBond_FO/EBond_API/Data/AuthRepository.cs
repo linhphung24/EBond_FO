@@ -13,7 +13,7 @@ namespace EBond_API.Data
             _factory = factory;
         }
 
-        public async Task<User?> GetUserByUsername(string username)
+        public async Task<UserViewModels?> GetUserByUsername(string username)
         {
             using var conn = _factory.CreateConnection();
             using var cmd = conn.CreateCommand();
@@ -28,7 +28,7 @@ namespace EBond_API.Data
             if (!await reader.ReadAsync())
                 return null;
 
-            return new User
+            return new UserViewModels
             {
                 Id           = reader.GetInt32(0),
                 Username     = reader.IsDBNull(1) ? string.Empty : reader.GetString(1),
@@ -36,7 +36,7 @@ namespace EBond_API.Data
             };
         }
 
-        public async Task<User?> GetUserById(int id)
+        public async Task<UserViewModels?> GetUserById(int id)
         {
             using var conn = _factory.CreateConnection();
             using var cmd = conn.CreateCommand();
@@ -51,7 +51,7 @@ namespace EBond_API.Data
             if (!await reader.ReadAsync())
                 return null;
 
-            return new User
+            return new UserViewModels
             {
                 Id           = reader.GetInt32(0),
                 Username     = reader.IsDBNull(1) ? string.Empty : reader.GetString(1),

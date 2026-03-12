@@ -58,6 +58,7 @@ builder.Services.AddScoped<AuthRepository>();
 builder.Services.AddScoped<BondRepository>();
 builder.Services.AddScoped<MCCodeRepository>();
 builder.Services.AddScoped<AssetRepository>();
+builder.Services.AddScoped<BalanceRepository>();
 builder.Services.AddScoped<TokenService>();
 builder.Services.AddScoped<AuthService>();
 
