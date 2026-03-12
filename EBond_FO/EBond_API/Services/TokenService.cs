@@ -22,9 +22,9 @@
 
             var claims = new[]
             {
-            new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
-            new Claim("username", user.Username)
-        };
+                new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
+                new Claim("username", user.Username) // username = custodycd
+            };
 
             var token = new JwtSecurityToken(
                 expires: DateTime.UtcNow.AddMinutes(15),

@@ -30,8 +30,8 @@ namespace EBond_API.Data
 
             return new User
             {
-                Id       = reader.GetInt32(0),
-                Username = reader.IsDBNull(1) ? string.Empty : reader.GetString(1),
+                Id           = reader.GetInt32(0),
+                Username     = reader.IsDBNull(1) ? string.Empty : reader.GetString(1),
                 PasswordHash = reader.IsDBNull(2) ? string.Empty : reader.GetString(2)
             };
         }
@@ -53,8 +53,8 @@ namespace EBond_API.Data
 
             return new User
             {
-                Id       = reader.GetInt32(0),
-                Username = reader.IsDBNull(1) ? string.Empty : reader.GetString(1),
+                Id           = reader.GetInt32(0),
+                Username     = reader.IsDBNull(1) ? string.Empty : reader.GetString(1),
                 PasswordHash = reader.IsDBNull(2) ? string.Empty : reader.GetString(2)
             };
         }

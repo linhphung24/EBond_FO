@@ -57,6 +57,7 @@ builder.Services.AddSingleton<SqlConnectionFactory>();
 builder.Services.AddScoped<AuthRepository>();
 builder.Services.AddScoped<BondRepository>();
 builder.Services.AddScoped<MCCodeRepository>();
+builder.Services.AddScoped<AssetRepository>();
 builder.Services.AddScoped<TokenService>();
 builder.Services.AddScoped<AuthService>();
 
