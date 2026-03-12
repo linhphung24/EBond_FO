@@ -1,11 +1,12 @@
-﻿/*================
+/*================
 POP-UP trong TopNav.cshtml */
 .popup {
-    position: absolute;
+    position: fixed;
     top: 100px;
     right: 20px;
     display: none;
     animation: popup 0.2s ease;
+    z-index: 1000;
 }
 
 @keyframes popup {
