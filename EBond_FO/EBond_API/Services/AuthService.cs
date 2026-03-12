@@ -34,7 +34,7 @@ namespace EBond_API.Services
             var refreshToken = _tokenService.GenerateRefreshToken();
             var tokenHash = HashHelper.Hash(refreshToken);
 
-            _db.RefreshTokens.Add(new RefreshToken
+            _db.RefreshTokens.Add(new RefreshTokenModels
             {
                 UserID = user.Id,
                 TokenHash = tokenHash,
@@ -78,7 +78,7 @@ namespace EBond_API.Services
             token.RevokedAt = DateTime.UtcNow;
             token.ReplacedByTokenHash = newHash;
 
-            _db.RefreshTokens.Add(new RefreshToken
+            _db.RefreshTokens.Add(new RefreshTokenModels
             {
                 UserID = token.UserID,
                 TokenHash = newHash,

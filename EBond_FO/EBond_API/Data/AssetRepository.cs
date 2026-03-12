@@ -13,16 +13,27 @@ namespace EBond_API.Data
             _factory = factory;
         }
 
-        public async Task<List<Asset>> GetAssetByCustomerAsync(string custodycd)
+        public async Task<List<AssetViewModels>> GetAssetByCustomerAsync(string custodycd)
         {
             using var conn = _factory.CreateConnection();
 
-            var result = await conn.QueryAsync<Asset>(
+            var result = await conn.QueryAsync<AssetViewModels>(
                 "SCMAST_CheckQuantity",
                 new { custodycd },
                 commandType: CommandType.StoredProcedure);
 
             return result.ToList();
+        }
+        public async Task<BalanceViewModels?> GetBalanceAsync(string custodycd)
+        {
+            using var conn = _factory.CreateConnection();
+
+            var result = await conn.QueryFirstOrDefaultAsync<BalanceViewModels>(
+                "TCAccountTransactionBond_GetBalance",
+                new { CustodyID = custodycd },
+                commandType: CommandType.StoredProcedure);
+
+            return result;
         }
     }
 }

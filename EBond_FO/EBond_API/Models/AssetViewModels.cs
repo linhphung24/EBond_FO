@@ -1,6 +1,6 @@
 namespace EBond_API.Models
 {
-    public class Asset
+    public class AssetViewModels
     {
         public string?  Custodycd         { get; set; }
         public string?  Symbol            { get; set; }
