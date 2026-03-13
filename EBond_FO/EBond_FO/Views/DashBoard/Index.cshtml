@@ -18,29 +18,34 @@
                 <thead>
                     <tr class="filter-row">
                         <th colspan="12">
-                            <div class="filter-bar">
-                                <div>
-                                    <span class="label">TCPH:</span>
-                                    <select id="filter-tcph">
-                                        <option value="">Tất cả</option>
-                                        @foreach (var tcph in Model.Select(x => x.TCPH).Where(x => !string.IsNullOrEmpty(x)).Distinct().OrderBy(x => x))
-                                        {
-                                            <option value="@tcph">@tcph</option>
-                                        }
-                                    </select>
+                            <form method="get" asp-action="Index">
+                                <div class="filter-bar">
+                                    <div class="filter-item">
+                                        <span class="label">Trái phiếu:</span>
+                                        <input type="text"
+                                               name="keyword"
+                                               placeholder="Nhập mã hoặc tên trái phiếu"
+                                               value="@Context.Request.Query["keyword"]" />
+                                    </div>
+
+                                    <div class="filter-item">
+                                        <span class="label">Trạng thái:</span>
+                                        <select name="securityTradingStatus">
+                                            <option value="">Tất cả</option>
+                                            @foreach (var s in ViewBag.AllStatus)
+                                            {
+                                                <option value="@s.ID"
+                                                        selected="@(Context.Request.Query["securityTradingStatus"] == s.ID)">
+                                                    @s.Description
+                                                </option>
+                                            }
+                                        </select>
+                                    </div>
+
+                                    <button type="submit" class="filter-btn">LỌC</button>
+
                                 </div>
-                                <div class="filter-item">
-                                    <span class="label">Trạng thái:</span>
-                                    <select id="filter-status">
-                                        <option value="">Tất cả</option>
-                                        @foreach (var s in Model.Select(x => x.SecurityTradingStatus).Where(x => !string.IsNullOrEmpty(x.ToString())).Distinct().OrderBy(x => x))
-                                        {
-                                            <option value="@s">@s</option>
-                                        }
-                                    </select>
-                                </div>
-                                <button class="filter-btn" onclick="applyFilter()">LỌC</button>
-                            </div>
+                            </form>
                         </th>
                     </tr>
                     <tr>
@@ -66,14 +71,14 @@
                             <td>@bond.Name</td>
                             <td>@bond.TCPH</td>
                             <td>@bond.INTEREST_RATE</td>
-                            <td>@bond.IssueDate</td>
-                            <td>@bond.MaturityDate</td>
+                            <td>@string.Format("{0:dd/MM/yyyy}", bond.IssueDate)</td>
+                            <td>@string.Format("{0:dd/MM/yyyy}", bond.MaturityDate)</td>
                             <td>@bond.BOND_PERIOD @bond.PERIOD_UNIT</td>
                             <td>@bond.PERIOD_REMAIN</td>
-                            <td>@bond.Parvalue</td>
+                            <td>@(bond.Parvalue?.ToString("N0"))</td>
                             <td>@bond.MatchPrice</td>
                             <td>@bond.MatchQtty</td>
-                            <td>@bond.SecurityTradingStatus</td>
+                            <td>@bond.SecurityTradingStatusText</td>
                         </tr>
                     }
                 </tbody>
@@ -90,23 +95,3 @@
         </div>
     </div>
 </div>
-
-@section Scripts {
-<script>
-    function applyFilter() {
-        const tcph   = document.getElementById('filter-tcph').value.toLowerCase();
-        const status = document.getElementById('filter-status').value.toLowerCase();
-        const rows   = document.querySelectorAll('#bond-tbody tr');
-
-        rows.forEach(row => {
-            const rowTcph   = (row.dataset.tcph   || '').toLowerCase();
-            const rowStatus = (row.dataset.status || '').toLowerCase();
-
-            const matchTcph   = !tcph   || rowTcph   === tcph;
-            const matchStatus = !status || rowStatus === status;
-
-            row.style.display = (matchTcph && matchStatus) ? '' : 'none';
-        });
-    }
-</script>
-}

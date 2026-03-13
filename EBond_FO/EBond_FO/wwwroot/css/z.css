@@ -163,6 +163,26 @@ tbody tr:hover {
     gap: 6px;
 }
 
+.filter-item input {
+    flex: 1;
+    min-width: 240px;
+    padding: 6px 0;
+    font-size: 16px;
+    border: none;
+    border-bottom: 1px solid #777;
+    background-color: #1f1f1f; /* ép màu nền */
+    color: #fff;
+    outline: none;
+}
+
+.filter-item input::placeholder {
+    color: #aaa;
+}
+
+.filter-item input:focus {
+    border-bottom: 1px solid #4da3ff;
+}
+
 /* Riêng nút lọc */
 .filter-btn {
     flex: 0 0 auto;                 /* KHÔNG GIÃN */
