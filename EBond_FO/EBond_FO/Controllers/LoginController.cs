@@ -36,6 +36,12 @@ namespace EBond_FO.Controllers
             }
 
             var token = await res.Content.ReadFromJsonAsync<JsonElement>();
+            Response.Cookies.Append("AccessToken", token.GetProperty("accessToken").GetString()!, new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = true,
+                SameSite = SameSiteMode.Strict
+            });
             HttpContext.Session.SetString("AccessToken",  token.GetProperty("accessToken").GetString()!);
             HttpContext.Session.SetString("RefreshToken", token.GetProperty("refreshToken").GetString()!);
 

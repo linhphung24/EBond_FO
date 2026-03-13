@@ -1,8 +1,11 @@
 namespace EBond_API.Controllers
 {
     using EBond_API.Data;
+    using EBond_API.Hub;
+    using EBond_API.Models;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
+    using Microsoft.AspNetCore.SignalR;
 
     [ApiController]
     [Route("api/[controller]")]
@@ -11,11 +14,12 @@ namespace EBond_API.Controllers
     {
         private readonly BondRepository    _bondRepo;
         private readonly MCCodeRepository  _mcCodeRepo;
-
-        public DashboardController(BondRepository bondRepo, MCCodeRepository mcCodeRepo)
+        private readonly IHubContext<OrderHub> _hubContext;
+        public DashboardController(BondRepository bondRepo, MCCodeRepository mcCodeRepo, IHubContext<OrderHub> hub)
         {
             _bondRepo   = bondRepo;
             _mcCodeRepo = mcCodeRepo;
+            _hubContext = hub;
         }
 
         /// <summary>
@@ -31,6 +35,9 @@ namespace EBond_API.Controllers
             try
             {
                 var data = await _bondRepo.GetAllAsync(symbol, name, securityTradingStatus);
+                //OrderModels order = new OrderModels { custodycd = "040P888888", id = 1, oodstatus = "a" };
+                //NotificationService notification = new NotificationService(_hubContext);
+                //await notification.NotifyOrderUpdate(order);
                 return Ok(data);
             }
             catch (Exception ex)
