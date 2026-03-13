@@ -14,10 +14,9 @@ namespace EBond_API.Data
             _factory = factory;
         }
 
-        // null or "" → skip filter (return all for that field)
+        // search = null or "" → return all; matches both symbol and name (accent-insensitive)
         public async Task<List<IFG_Corporate_Bond_InfoModels>> GetAllAsync(
-            string? symbol                = null,
-            string? name                  = null,
+            string? search                = null,
             int?    securityTradingStatus = null)
         {
             using var conn = _factory.CreateConnection();
@@ -26,8 +25,7 @@ namespace EBond_API.Data
                 "API_IFG_Corporate_Bond_Info_GetALL",
                 new
                 {
-                    Symbol                = symbol,
-                    Name                  = name,
+                    Search                = search,
                     SecurityTradingStatus = securityTradingStatus
                 },
                 commandType: CommandType.StoredProcedure);

@@ -28,16 +28,12 @@ namespace EBond_API.Controllers
         /// </summary>
         [HttpGet("bond/getall")]
         public async Task<IActionResult> GetBondAll(
-            [FromQuery] string? symbol                = null,
-            [FromQuery] string? name                  = null,
+            [FromQuery] string? search                = null,
             [FromQuery] int?    securityTradingStatus = null)
         {
             try
             {
-                var data = await _bondRepo.GetAllAsync(symbol, name, securityTradingStatus);
-                //OrderModels order = new OrderModels { custodycd = "040P888888", id = 1, oodstatus = "a" };
-                //NotificationService notification = new NotificationService(_hubContext);
-                //await notification.NotifyOrderUpdate(order);
+                var data = await _bondRepo.GetAllAsync(search, securityTradingStatus);
                 return Ok(data);
             }
             catch (Exception ex)
