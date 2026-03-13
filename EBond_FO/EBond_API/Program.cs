@@ -96,8 +96,24 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowFrontend",
+        policy =>
+        {
+            policy.WithOrigins("https://localhost:7081")// thay bằng Frontend
+                  .AllowAnyHeader()
+                  .AllowAnyMethod()
+                  .AllowCredentials();
+        });
+});
+
+builder.Services.AddSignalR();
 var app = builder.Build();
 
+app.MapHub<OrderHub>("/orderHub");
+app.UseCors("AllowFrontend");
 // Swagger UI (available in all environments)
 app.UseSwagger();
 app.UseSwaggerUI(options =>
