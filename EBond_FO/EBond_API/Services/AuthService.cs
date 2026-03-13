@@ -34,10 +34,11 @@ namespace EBond_API.Services
             var accessToken = _tokenService.GenerateAccessToken(user);
             var refreshToken = _tokenService.GenerateRefreshToken();
             var tokenHash = HashHelper.Hash(refreshToken);
-
+            
             _db.RefreshTokens.Add(new RefreshTokenModels
             {
                 UserID = user.Id,
+                UserName=user.Username,
                 TokenHash = tokenHash,
                 ExpiryDate = DateTime.UtcNow.AddDays(7),
                 IpAddress = ip

@@ -5,6 +5,7 @@ namespace EBond_API.Models
         public Guid Id { get; set; }
 
         public int UserID { get; set; }
+        public string UserName { get; set; }
 
         public string TokenHash { get; set; } = string.Empty;
 
