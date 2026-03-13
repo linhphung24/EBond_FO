@@ -1,5 +1,6 @@
 using EBond_API.ConnectDB;
 using EBond_API.Data;
+using EBond_API.Hub;
 using EBond_API.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -76,10 +77,44 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidateAudience = false,
             ClockSkew        = TimeSpan.Zero
         };
+        // QUAN TRỌNG cho SignalR
+        options.Events = new JwtBearerEvents
+        {
+            OnMessageReceived = context =>
+            {
+                //var accessToken = context.Request.Query["AccessToken"];
+                var accessToken = context.Request.Cookies["AccessToken"];
+                var path = context.HttpContext.Request.Path;
+
+                if (!string.IsNullOrEmpty(accessToken) &&
+                    path.StartsWithSegments("/orderHub"))
+                {
+                    context.Token = accessToken;
+                }
+
+                return Task.CompletedTask;
+            }
+        };
     });
 
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowFrontend",
+        policy =>
+        {
+            policy.WithOrigins("https://localhost:7081")// thay bằng Frontend
+                  .AllowAnyHeader()
+                  .AllowAnyMethod()
+                  .AllowCredentials();
+        });
+});
+
+builder.Services.AddSignalR();
 var app = builder.Build();
 
+app.MapHub<OrderHub>("/orderHub");
+app.UseCors("AllowFrontend");
 // Swagger UI (available in all environments)
 app.UseSwagger();
 app.UseSwaggerUI(options =>
