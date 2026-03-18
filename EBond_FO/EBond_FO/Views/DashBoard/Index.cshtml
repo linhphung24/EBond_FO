@@ -18,29 +18,34 @@
                 <thead>
                     <tr class="filter-row">
                         <th colspan="12">
-                            <div class="filter-bar">
-                                <div>
-                                    <span class="label">TCPH:</span>
-                                    <select id="filter-tcph">
-                                        <option value="">Tất cả</option>
-                                        @foreach (var tcph in Model.Select(x => x.TCPH).Where(x => !string.IsNullOrEmpty(x)).Distinct().OrderBy(x => x))
-                                        {
-                                            <option value="@tcph">@tcph</option>
-                                        }
-                                    </select>
+                            <form method="get" asp-action="Index">
+                                <div class="filter-bar">
+                                    <div class="filter-item">
+                                        <span class="label">Trái phiếu:</span>
+                                        <input type="text"
+                                               name="keyword"
+                                               placeholder="Nhập mã hoặc tên trái phiếu"
+                                               value="@Context.Request.Query["keyword"]" />
+                                    </div>
+
+                                    <div class="filter-item">
+                                        <span class="label">Trạng thái:</span>
+                                        <select name="securityTradingStatus">
+                                            <option value="">Tất cả</option>
+                                            @foreach (var s in ViewBag.AllStatus)
+                                            {
+                                                <option value="@s.ID"
+                                                        selected="@(Context.Request.Query["securityTradingStatus"] == s.ID)">
+                                                    @s.Description
+                                                </option>
+                                            }
+                                        </select>
+                                    </div>
+
+                                    <button type="submit" class="filter-btn">LỌC</button>
+
                                 </div>
-                                <div class="filter-item">
-                                    <span class="label">Trạng thái:</span>
-                                    <select id="filter-status">
-                                        <option value="">Tất cả</option>
-                                        @foreach (var s in Model.Select(x => x.SecurityTradingStatus).Where(x => !string.IsNullOrEmpty(x.ToString())).Distinct().OrderBy(x => x))
-                                        {
-                                            <option value="@s">@s</option>
-                                        }
-                                    </select>
-                                </div>
-                                <button class="filter-btn" onclick="applyFilter()">LỌC</button>
-                            </div>
+                            </form>
                         </th>
                     </tr>
                     <tr>
@@ -66,14 +71,14 @@
                             <td>@bond.Name</td>
                             <td>@bond.TCPH</td>
                             <td>@bond.INTEREST_RATE</td>
-                            <td>@bond.IssueDate</td>
-                            <td>@bond.MaturityDate</td>
+                            <td>@string.Format("{0:dd/MM/yyyy}", bond.IssueDate)</td>
+                            <td>@string.Format("{0:dd/MM/yyyy}", bond.MaturityDate)</td>
                             <td>@bond.BOND_PERIOD @bond.PERIOD_UNIT</td>
                             <td>@bond.PERIOD_REMAIN</td>
-                            <td>@bond.Parvalue</td>
+                            <td>@(bond.Parvalue?.ToString("N0"))</td>
                             <td>@bond.MatchPrice</td>
                             <td>@bond.MatchQtty</td>
-                            <td>@bond.SecurityTradingStatus</td>
+                            <td>@bond.SecurityTradingStatusText</td>
                         </tr>
                     }
                 </tbody>
@@ -89,24 +94,576 @@
             </table>
         </div>
     </div>
+
+    <!-- ===== PANEL TABS: Sổ lệnh / Tài sản / Dòng tiền / Lãi lỗ ===== -->
+    <div class="panel">
+        <!-- Tabs header -->
+        <div class="tab-header">
+            <div class="tab active" data-tab="orders">Sổ lệnh</div>
+            <div class="tab" data-tab="assets">Tài sản</div>
+            <div class="tab" data-tab="cashflow">Dòng tiền</div>
+            <div class="tab" data-tab="pnl">Lãi lỗ</div>
+        </div>
+        <!-- Content -->
+        <div class="content">
+
+            <!-- Sổ lệnh -->
+            <div class="tab-pane active" id="orders">
+                <div class="order-types">
+                    <label class="radio">
+                        <input type="radio" name="orderType" checked>
+                        <span></span>
+                        Thường
+                    </label>
+
+                    <label class="radio">
+                        <input type="radio" name="orderType">
+                        <span></span>
+                        Thỏa thuận
+                    </label>
+
+                    <label class="radio">
+                        <input type="radio" name="orderType">
+                        <span></span>
+                        Điều kiện
+                    </label>
+                </div>
+
+                <div class="empty">
+                    <div class="empty-icon">🗄️</div>
+                    <div class="empty-text">Không có giao dịch nào</div>
+                </div>
+            </div>
+
+            <!-- Tài sản -->
+            <div class="tab-pane" id="assets">
+                <div class="demo-box">
+                    <h4>Tài sản</h4>
+                    <div class="muted">Bạn có thể hiển thị số dư trái phiếu/tiền mặt/tổng tài sản ở đây.</div>
+                </div>
+                <div class="empty">
+                    <div class="empty-icon">🗂️</div>
+                    <div class="empty-text">Chưa có dữ liệu tài sản</div>
+                </div>
+            </div>
+
+            <!-- Dòng tiền -->
+            <div class="tab-pane" id="cashflow">
+                <div class="demo-box">
+                    <h4>Dòng tiền</h4>
+                    <div class="muted">Bạn có thể hiển thị lịch nhận coupon, lịch đáo hạn, biến động dòng tiền ở đây.</div>
+                </div>
+                <div class="empty">
+                    <div class="empty-icon">💸</div>
+                    <div class="empty-text">Chưa có dữ liệu dòng tiền</div>
+                </div>
+            </div>
+
+            <!-- Lãi lỗ -->
+            <div class="tab-pane" id="pnl">
+                <div class="demo-box">
+                    <h4>Lãi lỗ</h4>
+                    <div class="muted">Bạn có thể hiển thị lãi/lỗ theo danh mục hoặc theo từng mã trái phiếu ở đây.</div>
+                </div>
+                <div class="empty">
+                    <div class="empty-icon">📉</div>
+                    <div class="empty-text">Chưa có dữ liệu lãi lỗ</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== MODAL ĐẶT LỆNH MUA (3 bước) ===== -->
+    <div class="modal-overlay" style="display:none;">
+        <div class="modal ibond">
+            <!-- HEADER -->
+            <div class="modal-header">
+                <div class="title">Đặt lệnh iBond</div>
+                <div class="steps">
+                    <div class="step-wrap">
+                        <span class="step active" data-tab="info">1</span>
+                        <span class="step-label">Thông tin trái phiếu</span>
+                    </div>
+                    <div class="step-wrap">
+                        <span class="step" data-tab="risk">2</span>
+                        <span class="step-label">Điều chỉnh rủi ro</span>
+                    </div>
+                    <div class="step-wrap">
+                        <span class="step" data-tab="buy">3</span>
+                        <span class="step-label">Đặt lệnh</span>
+                    </div>
+                </div>
+                <div class="close" onclick="closeModal()">✕</div>
+            </div>
+
+            <!-- BODY -->
+            <div class="modal-body">
+                <!-- Step 1: Thông tin trái phiếu -->
+                <div class="step-pane" id="info">
+                    <div class="left">
+                        <div class="field">
+                            <label>Mã trái phiếu</label>
+                            <input value="" readonly id="modal-bond-code">
+                        </div>
+                        <div class="bond-card">
+                            <div class="bond-code" id="modal-bond-code-display"></div>
+                            <div class="bond-name" id="modal-bond-name"></div>
+                            <div class="bond-price">Mệnh giá: <b id="modal-parvalue"></b></div>
+                            <div class="bond-info">
+                                <div><span>Coupon</span><b id="modal-interest-rate"></b></div>
+                                <div><span>Kỳ hạn TP</span><b id="modal-period"></b></div>
+                                <div><span>Ngày phát hành</span><b id="modal-issue-date"></b></div>
+                                <div><span>Ngày đáo hạn</span><b id="modal-maturity-date"></b></div>
+                            </div>
+                        </div>
+                        <div class="warning">
+                            <b>Lưu ý:</b> Trái phiếu là sản phẩm đầu tư có rủi ro...
+                        </div>
+                    </div>
+                    <div class="right">
+                        <hr>
+                        <div class="section"><h3>Thanh toán gốc và lãi</h3></div>
+                        <hr>
+                        <div class="section"><h3>Coupon trái phiếu</h3></div>
+                        <hr>
+                        <div class="section"><h3>Tài sản đảm bảo</h3></div>
+                        <hr>
+                        <div class="section"><h3>Tổ chức bảo lãnh phát hành/đại lý phát hành</h3></div>
+                    </div>
+                </div>
+
+                <!-- Step 2: Điều chỉnh rủi ro -->
+                <div class="step-pane" id="risk">
+                    <div class="left">
+                        <div class="rate-box">
+                            <div class="rate-label">Điều chỉnh rủi ro</div>
+                        </div>
+                        <div class="desc">Để điều chỉnh rủi ro bạn có thể lựa chọn các gói sản phẩm dưới đây:</div>
+                        <div class="section">
+                            <div class="row">
+                                <span>Bảo toàn gốc lãi</span>
+                                <select><option>Thông thường</option></select>
+                            </div>
+                            <div class="row">
+                                <span>Lãi suất điều chỉnh</span>
+                                <span class="muted">--%/năm</span>
+                            </div>
+                        </div>
+                        <div class="section">
+                            <div class="row">
+                                <span>Nhu cầu đầu tư</span>
+                                <select><option>Linh hoạt</option></select>
+                            </div>
+                            <div class="desc">Được bán trên iConnect</div>
+                        </div>
+                    </div>
+                    <div class="right">
+                        <div class="section">
+                            <div class="section-title">Đảm bảo được nhận gốc, lãi</div>
+                            <div class="item">
+                                <div class="item-title">Protect</div>
+                                <div class="item-desc">Khách hàng được đảm bảo nhận đầy đủ gốc và lãi định kỳ.</div>
+                            </div>
+                            <div class="item">
+                                <div class="item-title">ProX</div>
+                                <div class="item-desc">Được đảm bảo nhận gốc và lãi trái phiếu thông qua dịch vụ môi giới.</div>
+                            </div>
+                        </div>
+                        <div class="section">
+                            <div class="section-title">Nhu cầu đầu tư</div>
+                            <div class="item">
+                                <div class="item-title">Linh hoạt</div>
+                                <div class="item-desc">Phù hợp với nhu cầu dòng tiền linh hoạt, có thể giữ đến đáo hạn hoặc bán lại.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 3: Đặt lệnh -->
+                <div class="step-pane" id="buy">
+                    <div class="left">
+                        <div class="buy-sell" style="display:flex;">
+                            <button class="active">Mua</button>
+                            <button onclick="showSell()">Bán</button>
+                        </div>
+                        <div class="field">
+                            <label>Mã trái phiếu</label>
+                            <input value="" readonly id="modal-buy-code">
+                        </div>
+                        <hr>
+                        <div class="box">
+                            <div class="options">
+                                <span>Đặt mua theo</span>
+                                <label>
+                                    <input type="radio" name="type" value="tp" checked onchange="toggleInput()">
+                                    Số lượng TP
+                                </label>
+                                <label>
+                                    <input type="radio" name="type" value="money" onchange="toggleInput()">
+                                    Số tiền
+                                </label>
+                            </div>
+                            <div id="tpBox">
+                                <input type="text" placeholder="Số lượng TP" oninput="onlyNumber(this)">
+                            </div>
+                            <div id="moneyBox" class="hidden">
+                                <input type="text" placeholder="Số tiền" oninput="onlyNumber(this)">
+                                <div class="note">Tương ứng số lượng (trái phiếu): 0</div>
+                            </div>
+                        </div>
+                        <div class="date-field">
+                            <label>Ngày giao dịch</label>
+                            <input type="date">
+                        </div>
+                        <div class="form-group">
+                            <div class="row">
+                                <label>
+                                    <input type="checkbox" id="refCheckbox">
+                                    Tôi có người giới thiệu
+                                </label>
+                                <div id="refInput" style="display:none;">
+                                    <input type="text" class="ref-input" placeholder="Nhập 105C/SĐT">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="right">
+                        <h4>Thông tin đặt lệnh</h4>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FOOTER -->
+            <div class="modal-footer">
+                <div style="width:260px;margin-left:0;font-size:13px;">
+                    <div class="rate" id="rate-invest">
+                        <div>Lãi suất đầu tư đã tái dự kiến</div>
+                        <div class="green">% / năm</div>
+                    </div>
+                    <div class="rate" id="principal">
+                        <div>Tiền gốc đầu tư</div>
+                        <div></div>
+                    </div>
+                </div>
+                <div class="footer-actions">
+                    <button class="back">QUAY LẠI</button>
+                    <button class="next">TIẾP TỤC</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== MODAL ĐẶT LỆNH BÁN (2 bước) ===== -->
+    <div class="modal-overlay1" style="display:none;">
+        <div class="modal ibond1">
+            <!-- HEADER -->
+            <div class="modal-header1">
+                <div class="title1">Đặt lệnh iBond</div>
+                <div class="steps1">
+                    <div class="step-wrap1">
+                        <span class="step1 active" data-tab="info1">1</span>
+                        <span class="step-label1">Thông tin chung</span>
+                    </div>
+                    <div class="step-wrap1">
+                        <span class="step1" data-tab="buy1">2</span>
+                        <span class="step-label1">Đặt lệnh</span>
+                    </div>
+                </div>
+                <div class="close1" onclick="closeModal()">✕</div>
+            </div>
+
+            <!-- BODY -->
+            <div class="modal-body1">
+                <!-- Step 1: Thông tin chung -->
+                <div class="step-pane1" id="info1">
+                    <div class="left">
+                        <div class="field">
+                            <label>Mã trái phiếu</label>
+                            <input value="" readonly>
+                        </div>
+                        <div class="bond-card">
+                            <div class="bond-price">Mệnh giá: <b></b></div>
+                            <div class="bond-info">
+                                <div><span>Coupon</span><b></b></div>
+                                <div><span>Kỳ hạn TP</span><b></b></div>
+                                <div><span>Ngày phát hành</span><b></b></div>
+                                <div><span>Ngày đáo hạn</span><b></b></div>
+                            </div>
+                        </div>
+                        <div class="warning">
+                            <b>Lưu ý:</b> Trái phiếu là sản phẩm đầu tư có rủi ro...
+                        </div>
+                    </div>
+                    <div class="right">
+                        <hr>
+                        <div class="section"><h3>Thanh toán gốc và lãi</h3></div>
+                        <hr>
+                        <div class="section"><h3>Coupon trái phiếu</h3></div>
+                        <hr>
+                        <div class="section"><h3>Tài sản đảm bảo</h3></div>
+                    </div>
+                </div>
+
+                <!-- Step 2: Đặt lệnh bán -->
+                <div class="step-pane1" id="buy1">
+                    <div class="left">
+                        <div class="buy-sell" style="display:flex;">
+                            <button onclick="showBuy()">Mua</button>
+                            <button class="active1">Bán</button>
+                        </div>
+                        <div class="field">
+                            <label>Mã trái phiếu</label>
+                            <input value="">
+                        </div>
+                        <div class="field">
+                            <label>Hợp đồng</label>
+                            <input value="">
+                        </div>
+                        <div class="field">
+                            <label>Ngày giao dịch</label>
+                            <input type="date" disabled>
+                        </div>
+                        <div class="field">
+                            <label>Số lượng</label>
+                            <input type="number" value="">
+                        </div>
+                    </div>
+                    <div class="right"></div>
+                </div>
+            </div>
+
+            <!-- FOOTER -->
+            <div class="modal-footer1">
+                <div style="width:260px;margin-left:0;font-size:13px;">
+                    <div class="rate" id="rate-invest1">
+                        <div>Lãi suất đầu tư đã tái dự kiến</div>
+                        <div class="red">% / năm</div>
+                    </div>
+                    <div class="rate" id="principal1">
+                        <div>Tiền gốc đầu tư</div>
+                        <div></div>
+                    </div>
+                </div>
+                <div class="footer-actions1">
+                    <button class="back1">QUAY LẠI</button>
+                    <button class="next1">TIẾP TỤC</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 @section Scripts {
 <script>
-    function applyFilter() {
-        const tcph   = document.getElementById('filter-tcph').value.toLowerCase();
-        const status = document.getElementById('filter-status').value.toLowerCase();
-        const rows   = document.querySelectorAll('#bond-tbody tr');
+    // ===== XỬ LÍ TABS (Sổ lệnh / Tài sản / Dòng tiền / Lãi lỗ) =====
+    const tabs = document.querySelectorAll(".tab");
+    const panes = document.querySelectorAll(".tab-pane");
 
-        rows.forEach(row => {
-            const rowTcph   = (row.dataset.tcph   || '').toLowerCase();
-            const rowStatus = (row.dataset.status || '').toLowerCase();
+    function activateTab(tabId) {
+        tabs.forEach(t => t.classList.toggle("active", t.dataset.tab === tabId));
+        panes.forEach(p => p.classList.toggle("active", p.id === tabId));
+    }
 
-            const matchTcph   = !tcph   || rowTcph   === tcph;
-            const matchStatus = !status || rowStatus === status;
+    tabs.forEach(t => {
+        t.addEventListener("click", () => activateTab(t.dataset.tab));
+    });
 
-            row.style.display = (matchTcph && matchStatus) ? '' : 'none';
+    // ===== XỬ LÍ MODAL =====
+    const modalOverlay = document.querySelector('.modal-overlay');
+    const modalOverlay1 = document.querySelector('.modal-overlay1');
+
+    // Mở modal mua khi click nút .buy-btn trên bảng
+    document.querySelectorAll('.buy-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            modalOverlay.style.display = 'flex';
         });
+    });
+
+    function showBuy() {
+        modalOverlay.style.display = 'flex';
+        modalOverlay1.style.display = 'none';
+    }
+
+    function showSell() {
+        modalOverlay1.style.display = 'flex';
+        modalOverlay.style.display = 'none';
+    }
+
+    // Đóng modal và reset về step đầu
+    window.closeModal = function () {
+        modalOverlay.style.display = 'none';
+        modalOverlay1.style.display = 'none';
+        resetToFirstStep();
+        resetToFirstStep1();
+    };
+
+    // ===== STEPS CHO MODAL MUA (3 bước) =====
+    document.addEventListener("DOMContentLoaded", function () {
+        const steps = Array.from(document.querySelectorAll(".step"));
+        const stepPanes = Array.from(document.querySelectorAll(".step-pane"));
+        const btnNext = document.querySelector(".next");
+        const btnBack = document.querySelector(".back");
+
+        function getActiveIndex() {
+            return steps.findIndex(s => s.classList.contains("active"));
+        }
+
+        function showStep(index) {
+            steps.forEach((step, i) => {
+                step.classList.remove("active");
+                if (i < index) step.classList.add("done");
+                else step.classList.remove("done");
+            });
+            steps[index].classList.add("active");
+
+            stepPanes.forEach(p => {
+                p.style.display = "none";
+                p.classList.remove("active");
+            });
+            const tabId = steps[index].dataset.tab;
+            const activePane = document.getElementById(tabId);
+            if (activePane) {
+                activePane.classList.add("active");
+                activePane.style.display = "";
+            }
+
+            if (btnBack) {
+                btnBack.style.display = (tabId === "info") ? "none" : "inline-block";
+            }
+            updateFooterByStep(tabId);
+        }
+
+        window.resetToFirstStep = function () {
+            showStep(0);
+        };
+
+        // Khởi tạo
+        showStep(getActiveIndex() >= 0 ? getActiveIndex() : 0);
+
+        if (btnNext) {
+            btnNext.addEventListener("click", function () {
+                if (getComputedStyle(modalOverlay).display === "none") return;
+                const currentIndex = getActiveIndex();
+                if (steps[currentIndex].dataset.tab === "buy") return;
+                if (currentIndex < steps.length - 1) showStep(currentIndex + 1);
+            });
+        }
+
+        if (btnBack) {
+            btnBack.addEventListener("click", function () {
+                if (getComputedStyle(modalOverlay).display === "none") return;
+                const currentIndex = getActiveIndex();
+                if (currentIndex > 0) showStep(currentIndex - 1);
+            });
+        }
+    });
+
+    // ===== STEPS CHO MODAL BÁN (2 bước) =====
+    document.addEventListener("DOMContentLoaded", function () {
+        const steps1 = Array.from(document.querySelectorAll(".step1"));
+        const stepPanes1 = Array.from(document.querySelectorAll(".step-pane1"));
+        const btnNext1 = document.querySelector(".next1");
+        const btnBack1 = document.querySelector(".back1");
+
+        if (!steps1.length) return;
+
+        function getActiveIndex1() {
+            const idx = steps1.findIndex(s => s.classList.contains("active"));
+            return idx >= 0 ? idx : 0;
+        }
+
+        function showStep1(index) {
+            steps1.forEach((step, i) => {
+                step.classList.remove("active");
+                if (i < index) step.classList.add("done");
+                else step.classList.remove("done");
+            });
+            steps1[index].classList.add("active");
+
+            stepPanes1.forEach(p => {
+                p.style.display = "none";
+                p.classList.remove("active");
+            });
+            const tabId = steps1[index].dataset.tab;
+            const activePane = document.getElementById(tabId);
+            if (activePane) {
+                activePane.classList.add("active");
+                activePane.style.display = "";
+            }
+
+            if (btnBack1) {
+                btnBack1.style.display = (tabId === "info1") ? "none" : "inline-block";
+            }
+            updateFooterByStep1(tabId);
+        }
+
+        window.resetToFirstStep1 = function () {
+            showStep1(0);
+        };
+
+        steps1.forEach((s, i) => s.addEventListener("click", () => showStep1(i)));
+
+        showStep1(getActiveIndex1());
+
+        if (btnNext1) {
+            btnNext1.addEventListener("click", function () {
+                if (getComputedStyle(modalOverlay1).display === "none") return;
+                const idx = getActiveIndex1();
+                if (idx < steps1.length - 1) showStep1(idx + 1);
+            });
+        }
+
+        if (btnBack1) {
+            btnBack1.addEventListener("click", function () {
+                if (getComputedStyle(modalOverlay1).display === "none") return;
+                const idx = getActiveIndex1();
+                if (idx > 0) showStep1(idx - 1);
+            });
+        }
+    });
+
+    // ===== CẬP NHẬT FOOTER THEO STEP =====
+    function updateFooterByStep(stepId) {
+        const rateInvest = document.getElementById("rate-invest");
+        const principal = document.getElementById("principal");
+        if (!rateInvest || !principal) return;
+        rateInvest.style.display = (stepId === "info") ? "none" : "flex";
+        principal.style.display = (stepId === "buy") ? "flex" : "none";
+    }
+
+    function updateFooterByStep1(stepId) {
+        const rateInvest = document.getElementById("rate-invest1");
+        const principal = document.getElementById("principal1");
+        if (!rateInvest || !principal) return;
+        rateInvest.style.display = (stepId === "info1") ? "none" : "flex";
+        principal.style.display = (stepId === "buy1") ? "flex" : "none";
+    }
+
+    // ===== NHẬP SỐ LƯỢNG / SỐ TIỀN =====
+    function toggleInput() {
+        const type = document.querySelector('input[name="type"]:checked')?.value;
+        document.getElementById('tpBox')?.classList.toggle('hidden', type !== 'tp');
+        document.getElementById('moneyBox')?.classList.toggle('hidden', type !== 'money');
+    }
+
+    function onlyNumber(input) {
+        input.value = input.value.replace(/[^0-9]/g, '');
+    }
+
+    // ===== NGƯỜI GIỚI THIỆU =====
+    document.addEventListener("DOMContentLoaded", function () {
+        const refCheckbox = document.getElementById("refCheckbox");
+        const refInput = document.getElementById("refInput");
+        if (refCheckbox && refInput) {
+            refCheckbox.addEventListener("change", function () {
+                refInput.style.display = this.checked ? "block" : "none";
+            });
+        }
+    });
+
+    // ===== ẨN HIỆN TOGGLE BOX =====
+    function toggleContent(el) {
+        el.parentElement.classList.toggle("active");
     }
 </script>
 }

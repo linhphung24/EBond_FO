@@ -14,6 +14,7 @@ namespace EBond_FO.Models
         public string? Tradingdate { get; set; }
         public string? BoardCode { get; set; }
         public int? SecurityTradingStatus { get; set; }
+        public string? SecurityTradingStatusText { get; set; }
         public string? TradingSessionID { get; set; }
         public int? TradSesStatus { get; set; }
         public DateTime? MaturityDate { get; set; }

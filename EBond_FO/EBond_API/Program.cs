@@ -13,6 +13,9 @@ var builder = WebApplication.CreateBuilder(args);
 // Controllers
 builder.Services.AddControllers();
 
+// SignalR
+builder.Services.AddSignalR();
+
 // Swagger / OpenAPI
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
@@ -61,6 +64,7 @@ builder.Services.AddScoped<BondRepository>();
 builder.Services.AddScoped<MCCodeRepository>();
 builder.Services.AddScoped<AssetRepository>();
 builder.Services.AddScoped<UserRepository>();
+//builder.Services.AddScoped<OrderRepository>();
 builder.Services.AddScoped<TokenService>();
 builder.Services.AddScoped<AuthService>();
 
@@ -77,21 +81,16 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidateAudience = false,
             ClockSkew        = TimeSpan.Zero
         };
-        // QUAN TRỌNG cho SignalR
+
+        // SignalR WebSocket cannot set headers — read token from query string
         options.Events = new JwtBearerEvents
         {
             OnMessageReceived = context =>
             {
-                //var accessToken = context.Request.Query["AccessToken"];
-                var accessToken = context.Request.Cookies["AccessToken"];
+                var accessToken = context.Request.Query["access_token"];
                 var path = context.HttpContext.Request.Path;
-
-                if (!string.IsNullOrEmpty(accessToken) &&
-                    path.StartsWithSegments("/orderHub"))
-                {
+                if (!string.IsNullOrEmpty(accessToken) && path.StartsWithSegments("/hub"))
                     context.Token = accessToken;
-                }
-
                 return Task.CompletedTask;
             }
         };
@@ -129,5 +128,8 @@ app.UseAuthentication();    // ← must be before UseAuthorization
 app.UseAuthorization();
 
 app.MapControllers();
+
+// SignalR hub endpoint
+app.MapHub<OrderHub>("/hub/order");
 
 app.Run();
